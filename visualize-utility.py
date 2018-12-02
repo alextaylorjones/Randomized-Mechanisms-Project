@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
-import seaborn as sns
+
 DEBUG = True
 """
     calc_exp_utility: Calculates the maximum expected utility of an agent in a bid-affine environment
@@ -40,8 +40,9 @@ def calc_exp_utility(const_list,pdfM,user_type):
     return max(0.,exp_util)
 
 if (__name__ == "__main__"):
-    F = "all-0-1-uniform"
-    if (F == "all-0-1-uniform"):
+    arg = "all-0-1-uniform-2d"
+    #2d plot
+    if (arg == "all-0-1-uniform-2d"):
         #Assuming F is the same for all, and U[0,1]
         first_price_const = (0,1.,0,2.)
         second_price_const = (0,0.5,0,1.)
@@ -61,11 +62,13 @@ if (__name__ == "__main__"):
 
         #ax = sns.heatmap(np.array(to_plot))
         #plt.show()
-        fig = plt.figure()
-        s = fig.add_subplot(1,1,1,xlabel="User Type",ylabel="P[M = 1st Price]/1 - P[M = 2nd Price]")
+        fig = plt.figure("Optimal Strategy Bid")
+        s = fig.add_subplot(1,1,1,xlabel="User Type",ylabel="P[M = 1st Price]")
         im = s.imshow(to_plot,
                 extent = (0,1,0,1),
                 origin='lower')
         fig.colorbar(im)
         plt.show()
 
+    elif (arg == "all-0-1-3d"):
+        print
