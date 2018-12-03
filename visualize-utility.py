@@ -100,14 +100,14 @@ if (__name__ == "__main__"):
                     else:
                         probM = (prob_first_price, prob_second_price,prob_lottery)
                         val = calc_exp_utility(const_list,probM,user_type)
-                        #print "Prob First Price (%.2f),User_type (%.2f)-> Exp Utility (%.2f) "%(prob_first_price,user_type,val)
+                        print "Prob First Price (%.2f),Prob Second Price (%.2f), User_type (%.2f)-> Exp Utility (%.2f) "%(prob_first_price,prob_second_price,user_type,val)
                         val_list = to_plot[-1]
                         val_list.append(val)
 
             #Construct a plot
-            ax = fig.add_subplot(2,5,(i+1),xlabel="P[M = 1st Price]",ylabel="P[M = 2nd Price]")
+            ax = fig.add_subplot(2,5,(i+1),xlabel="P[M = 2nd Price]",ylabel="P[M = 1st Price]")
             ax.set_title("User Type %.2f"%user_type)
-            print to_plot
+            #print to_plot
             current_cmap = plt.cm.get_cmap()
             current_cmap.set_bad(color='white')
             im = ax.imshow(to_plot,
