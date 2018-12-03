@@ -36,11 +36,11 @@ def calc_exp_utility(const_list,pdfM,user_type):
     
     if (DEBUG):
         if (exp_util < 0.):
-            print "Expected utility (without normalizing) less than 0 for user of type ",user_type
+            print "Expected utility (without normalizing) less than 0 for user of type ",user_type, " and pdfM =",pdfM
     return max(0.,exp_util)
 
 if (__name__ == "__main__"):
-    arg = "all-0-1-uniform-2d"
+    arg = "all-0-1-uniform-3d"
     #2d plot
     if (arg == "all-0-1-uniform-2d"):
         #Assuming F is the same for all, and U[0,1]
@@ -62,6 +62,7 @@ if (__name__ == "__main__"):
 
         #ax = sns.heatmap(np.array(to_plot))
         #plt.show()
+        print to_plot
         fig = plt.figure("Optimal Strategy Bid")
         s = fig.add_subplot(1,1,1,xlabel="User Type",ylabel="P[M = 1st Price]")
         im = s.imshow(to_plot,
@@ -70,5 +71,53 @@ if (__name__ == "__main__"):
         fig.colorbar(im)
         plt.show()
 
-    elif (arg == "all-0-1-3d"):
-        print
+
+
+    elif (arg == "all-0-1-uniform-3d"):
+        #Assuming F is the same for all, and U[0,1]
+        N = 2
+        first_price_const = (0,1.,0,2.)
+        second_price_const = (0,0.5,0,1.)
+        lottery_const = (0.,1.,(1./N),0.)
+        
+        Delta_prob = 0.01 #resolution of probabilities
+        NUM_TYPES = 10 #number of types, chosen uniformly in between 0 and 1 
+        const_list = (first_price_const,second_price_const,lottery_const)
+
+        fig = plt.figure("Optimal Strategy Bid")
+        im = None 
+        for i,user_type in enumerate(np.arange((1./NUM_TYPES),1.+(1./NUM_TYPES),(1./NUM_TYPES))):
+            #Calculate values
+            to_plot = []
+            for prob_first_price in np.arange(0,1 +Delta_prob,Delta_prob):
+                to_plot.append([])
+                for prob_second_price in np.arange(0,1 + Delta_prob, Delta_prob):
+
+                    prob_lottery = 1. - prob_first_price - prob_second_price
+                    if (prob_lottery < 0 or prob_lottery >= 1):
+                        val_list = to_plot[-1]
+                        val_list.append(np.nan)
+                    else:
+                        probM = (prob_first_price, prob_second_price,prob_lottery)
+                        val = calc_exp_utility(const_list,probM,user_type)
+                        #print "Prob First Price (%.2f),User_type (%.2f)-> Exp Utility (%.2f) "%(prob_first_price,user_type,val)
+                        val_list = to_plot[-1]
+                        val_list.append(val)
+
+            #Construct a plot
+            ax = fig.add_subplot(2,5,(i+1),xlabel="P[M = 1st Price]",ylabel="P[M = 2nd Price]")
+            ax.set_title("User Type %.2f"%user_type)
+            print to_plot
+            current_cmap = plt.cm.get_cmap()
+            current_cmap.set_bad(color='white')
+            im = ax.imshow(to_plot,
+                    extent = (0,1,0,1),
+                    origin='lower')
+                    #vmin=0,
+                    #vmax=1)
+       
+        #Show plots
+
+            fig.colorbar(im)
+        plt.show()
+
